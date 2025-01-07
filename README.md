@@ -55,7 +55,7 @@ Content-Type: application/json
     "title": "Implement REST API",
     "description": "Create a REST API using PHP and PostgreSQL",
     "due_date": "2024-01-15",
-    "status": "in_progress",
+    "status": "pending",
     "user_id": 1
 }
 ```
@@ -72,7 +72,7 @@ Content-Type: application/json
     "title": "Implement REST API",
     "description": "Create a REST API using PHP and PostgreSQL - Updated",
     "due_date": "2024-01-20",
-    "status": "completed",
+    "status": "pending",
     "user_id": 1
 }
 ```

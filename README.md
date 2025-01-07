@@ -1,32 +1,24 @@
 # Task Management API
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.1-blue.svg)](https://www.php.net)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13-blue.svg)](https://www.postgresql.org)
-[![Slim Framework](https://img.shields.io/badge/Slim-4.11-orange.svg)](http://www.slimframework.com)
-
-A simple REST API for task management built with PHP, Slim Framework, and PostgreSQL.
+A RESTful API for task management built with PHP, Slim Framework, and PostgreSQL.
 
 ## Features
 
-- CRUD operations for tasks
-- Task status management (pending, in_progress, completed) 
-- User association with tasks
+- Complete CRUD operations for tasks
+- Task status management (pending, in_progress, completed)
+- User assignment
 - Input validation
 - Error handling
-- Docker containerized application
+- Unit and Integration tests
 
 ## Requirements
 
 - Docker
 - Docker Compose
-- Port 8080 available for the web server
-- Port 5433 available for PostgreSQL
 
-## Installation & Setup
+## Installation
 
-1. Clone the repository
-2. Configure environment (optional)
-3. Start the containers
+1. Clone the repository:
 
 ```bash
 git clone <repository-url>
@@ -40,12 +32,23 @@ The application will be available at `http://localhost:8080`
 
 ### List all tasks
 
+```bash
 GET http://localhost:8080/api/tasks
+```
+
+### Get a task by ID
+
+```bash
+GET http://localhost:8080/api/tasks/{id}
+```
+
 
 ### Create a task
 
+```bash
 POST http://localhost:8080/api/tasks
 Content-Type: application/json
+```
 
 ```json
 {
@@ -59,8 +62,10 @@ Content-Type: application/json
 
 ### Update a task
 
+```bash
 PUT http://localhost:8080/api/tasks/{id}
 Content-Type: application/json
+```
 
 ```json
 {
@@ -74,7 +79,9 @@ Content-Type: application/json
 
 ### Delete a task
 
+```bash
 DELETE http://localhost:8080/api/tasks/{id}
+```
 
 ## Database Schema
 
@@ -95,32 +102,22 @@ The application uses two main tables:
 - user_id (INTEGER) - foreign key to users table
 - created_at (TIMESTAMP)
 
-## Testing
-
-You can test the API using tools like Postman or cURL. Sample test data is automatically loaded when the containers start.
 
 ### Sample Users
-- John Doe (ID: 1)
-- Jane Smith (ID: 2)
 
-### Sample cURL Commands
-
-1. List all tasks:
 ```bash
-curl http://localhost:8080/api/tasks
+John Doe (ID: 1)
+Jane Smith (ID: 2)
 ```
 
-2. Create a new task:
+## Running Tests
+
 ```bash
-curl -X POST http://localhost:8080/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "New Task",
-    "description": "Task Description",
-    "due_date": "2024-01-15",
-    "status": "pending",
-    "user_id": 1
-  }'
+# Run unit tests only
+docker-compose run --rm php-test ./vendor/bin/phpunit tests/Unit
+
+# Run integration tests only
+docker-compose run --rm php-test ./vendor/bin/phpunit tests/Integration
 ```
 
 ## Project Structure

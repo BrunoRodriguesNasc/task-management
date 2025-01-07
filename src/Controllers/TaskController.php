@@ -27,36 +27,36 @@ class TaskController
         $data = $request->getParsedBody();
         $task = $this->task->createTask($data);
         $response->getBody()->write(json_encode($task));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+        return $response->withHeader('Content-Type', 'application/json')
+                       ->withStatus(201);
     }
 
     public function updateTask(Request $request, Response $response, array $args)
     {
-        $id = $args['id'];
+        $id = (int) $args['id'];
         $data = $request->getParsedBody();
         
-        try {
-            $result = $this->task->updateTask($id, $data);
-            $response->getBody()->write(json_encode([
-                'success' => $result,
-                'message' => 'Task updated successfully'
-            ]));
-            return $response->withHeader('Content-Type', 'application/json');
-        } catch (\Exception $e) {
-            $response->getBody()->write(json_encode([
-                'success' => false,
-                'message' => $e->getMessage()
-            ]));
-            return $response->withHeader('Content-Type', 'application/json')
-                           ->withStatus(400);
-        }
+        $task = $this->task->updateTask($id, $data);
+        
+        $responseData = [
+            'success' => true,
+            'data' => $task
+        ];
+        
+        $response->getBody()->write(json_encode($responseData));
+        return $response->withHeader('Content-Type', 'application/json');
     }
 
     public function deleteTask(Request $request, Response $response, array $args)
     {
-        $id = $args['id'];
-        $result = $this->task->deleteTask($id);
-        $response->getBody()->write(json_encode(['success' => $result]));
+        $id = (int) $args['id'];
+        $this->task->deleteTask($id);
+        
+        $response->getBody()->write(json_encode([
+            'success' => true,
+            'message' => 'Task deleted successfully'
+        ]));
+        
         return $response->withHeader('Content-Type', 'application/json');
     }
 } 

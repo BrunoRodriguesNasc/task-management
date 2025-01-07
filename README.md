@@ -113,12 +113,39 @@ Jane Smith (ID: 2)
 ## Running Tests
 
 ```bash
+
 # Run unit tests only
 docker-compose run --rm php-test ./vendor/bin/phpunit tests/Unit
 
 # Run integration tests only
 docker-compose run --rm php-test ./vendor/bin/phpunit tests/Integration
 ```
+
+## API Documentation
+
+The API documentation is available through Swagger UI, which provides an interactive interface to explore and test the endpoints.
+
+### Accessing the Documentation
+
+- **Swagger UI Interface**: [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+  - Interactive documentation
+  - Test endpoints directly from the browser
+  - View request/response schemas
+  - Example requests and responses
+
+- **Raw OpenAPI Specification**: [http://localhost:8080/docs/openapi.yaml](http://localhost:8080/docs/openapi.yaml)
+  - YAML format
+  - Can be imported into other tools
+  - Machine-readable API specification
+
+### Features Documented
+
+- Complete CRUD operations for tasks
+- Request/response schemas
+- Error responses
+- Input validation rules
+- Example payloads
+- Status codes and their meanings
 
 ## Project Structure
 
@@ -165,3 +192,4 @@ docker-compose exec postgres psql -U task_user -d task_db
 ## License
 
 MIT License
+

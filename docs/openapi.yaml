@@ -1,65 +1,38 @@
 openapi: 3.0.0
 info:
-  title: Task API
+  title: Task Management API
   version: 1.0.0
-  description: API for task management
+  description: |
+    # Introduction
+    This API provides a complete task management system with user assignments and status tracking.
 
-paths:
-  /api/tasks:
-    get:
-      summary: List all tasks
-      responses:
-        '200':
-          description: List of tasks
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-    
-    post:
-      summary: Create a new task
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskInput'
-      responses:
-        '201':
-          description: Task created
+    ## Features
+    - Create, read, update, and delete tasks
+    - Assign tasks to users
+    - Track task status
+    - Due date management
 
-  /api/tasks/{id}:
-    put:
-      summary: Update a task
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TaskInput'
-      responses:
-        '200':
-          description: Task updated
-    
-    delete:
-      summary: Remove a task
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Task removed
+    ## Authentication
+    Authentication will be implemented in future versions.
+  contact:
+    name: API Support
+    email: support@example.com
+    url: http://example.com/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Tasks
+    description: Task management endpoints
+  - name: Users
+    description: User management endpoints
 
 components:
   schemas:
@@ -68,36 +41,231 @@ components:
       properties:
         id:
           type: integer
+          example: 1
         title:
           type: string
+          example: "Complete project documentation"
         description:
           type: string
+          example: "Write API documentation"
         due_date:
           type: string
           format: date
+          example: "2024-01-20"
         status:
           type: string
           enum: [pending, in_progress, completed]
+          example: "pending"
         user_id:
           type: integer
+          example: 1
         user_name:
           type: string
-    
-    TaskInput:
-      type: object
+          example: "John Doe"
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:00:00Z"
       required:
         - title
         - status
+        - user_id
+
+    Error:
+      type: object
       properties:
-        title:
+        error:
+          type: boolean
+          example: true
+        message:
           type: string
-        description:
-          type: string
-        due_date:
-          type: string
-          format: date
-        status:
-          type: string
-          enum: [pending, in_progress, completed]
-        user_id:
-          type: integer 
+          example: "Invalid input data"
+        details:
+          type: object
+          additionalProperties: true
+
+paths:
+  /api/tasks:
+    tags:
+      - Tasks
+    get:
+      summary: List all tasks
+      tags:
+        - Tasks
+      description: Retrieves a list of all tasks in the system
+      responses:
+        '200':
+          description: List of tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create a new task
+      tags:
+        - Tasks
+      description: Creates a new task with the provided data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - status
+                - user_id
+              properties:
+                title:
+                  type: string
+                  example: "New task"
+                description:
+                  type: string
+                  example: "Task description"
+                due_date:
+                  type: string
+                  format: date
+                  example: "2024-01-20"
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+                  example: "pending"
+                user_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/tasks/{id}:
+    tags:
+      - Tasks
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Task ID
+    
+    get:
+      summary: Get task by ID
+      tags:
+        - Tasks
+      description: Retrieves a specific task by its ID
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update a task
+      tags:
+        - Tasks
+      description: Updates an existing task with the provided data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                due_date:
+                  type: string
+                  format: date
+                status:
+                  type: string
+                  enum: [pending, in_progress, completed]
+                user_id:
+                  type: integer
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Task or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete a task
+      tags:
+        - Tasks
+      description: Removes a task from the system
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

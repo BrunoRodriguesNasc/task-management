@@ -46,8 +46,11 @@ $routes = require __DIR__ . '/../src/Routes/api.php';
 $routes($app);
 
 $app->get('/', function ($request, $response) {
-    $response->getBody()->write('API is running');
-    return $response;
+    return ApiResponse::success('API is running');
+});
+
+$app->get('/api-docs', function ($request, $response) {
+    return $response->withRedirect('/api-docs');
 });
 
 $app->run(); 

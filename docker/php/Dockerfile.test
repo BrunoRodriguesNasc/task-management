@@ -1,0 +1,31 @@
+FROM php:8.1-fpm
+
+# Instalar dependências do sistema
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    git \
+    unzip \
+    zip \
+    && docker-php-ext-install pdo pdo_pgsql
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Configurar diretório de trabalho
+WORKDIR /var/www
+
+# Copiar apenas os arquivos necessários primeiro
+COPY composer.* ./
+
+# Permitir execução como root e instalar dependências
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --prefer-dist --no-scripts --no-autoloader --no-interaction
+
+# Copiar o resto dos arquivos
+COPY . .
+
+# Gerar autoloader otimizado
+RUN composer dump-autoload --optimize
+
+# Comando padrão para executar os testes
+CMD ["./vendor/bin/phpunit"] 
